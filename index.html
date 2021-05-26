@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Coin Flip Game</title>
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-+0n0xVW2eSR5OomGNYDnhzAbDsOXxcvSN1TPprVMTNDbiYZCxYbOOl7+AMvyTG2x" crossorigin="anonymous">
+    </head>
+    <body>
+        <div class="container-fluid ">
+            <div class="p-5 mb-4 bg-light rounded-3">
+                <div class="container-fluid py-5">
+                    <h1 class="display-5 fw-bold text-center mb-3">Coin Flip Game</h1>
+                    <div class="row">
+                        <div class="col-4 card">
+                            <div class="col-12 text-center">
+                                <h2>Heads or Tails?</h2> 
+                            </div>
+                            <div class="col-12 d-flex justify-content-around">
+                                <div class="d-grid gap-2">
+                                    <button type="button" class=" fs-1 btn btn-primary btn-lg" onclick="setOption('Heads')">Heads</button>
+                                    <button type="button" class=" fs-1 btn btn-primary btn-lg" onclick="setOption('Tails')">Tails</button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-4 card">
+                            <h2>Option:</h2>
+                            <p class="fs-1 badge rounded-pill bg-dark" id="option">Pick to play</p>
+                            <button type="button" class="btn btn-success disabled" id="play-game" onclick="startFlipping()">Play Game</button>
+                        </div>
+                        <div class="col-4 card">
+                            <img id="coin" src="https://www.usmint.gov/wordpress/wp-content/uploads/2020/12/2021-general-george-washington-crossing-the-delaware-quarter-uncirculated-obverse-philadelphia-768x768.jpg" alt="coin" style='width:100%' />
+                        </div>
+                    </div>
+                    <div class="alert alert-success d-none"  id="win" role="alert">
+                        You Won!
+                    </div>
+                    <div class="alert alert-danger d-none"  id="loss" role="alert">
+                        You Lost!
+                    </div>
+                    <h2>Score: <span id="score">0</span></h2>
+                </div>
+            </div>
+        </div>     
+    </body>
+    <script>
+        //Keeps count of degrees rotated.
+        let x = 0;
+        //Keeps count of times flipped.
+        let y = 0;
+        //initialized interval variable.
+        let myInterval;
+        //initialize variable that is randomly generated the amount of flips.
+        let numOfFlips = 0;
+        //initialize score variable.
+        let score = 0;
+
+        function startFlipping(){
+            //Resets alert if there are alerts
+            if ( document.getElementById("win").classList.contains('d-none') ){
+            } else {
+               document.getElementById('win').classList.add('d-none'); 
+            }
+            if ( document.getElementById("loss").classList.contains('d-none') ){
+            } else {
+               document.getElementById('loss').classList.add('d-none'); 
+            }
+            //Gets the number of time the coin will flip
+            numOfFlips = getRandomNumberOfTurns();
+            //This start the coin flip animation
+            if(myInterval === undefined){
+               myInterval = setInterval(function(){flipCoin()}, 1); 
+            } else {
+            }
+        }
+
+        function stopFlipping(){
+            //Stops the flipping animation
+            clearInterval(myInterval);
+            //Resets the interval
+            myInterval = undefined;
+            //Resets the number of flips
+            numOfFlips = 0;
+            //Resets the flip counter to 0
+            y = 0;
+        }
+
+        function flipCoin() {
+            //increments x by 1 which changes the degrees of the image on the x axis
+            x = x + 1;
+            //Changes the image to tails
+            if(x === 90){
+                clearInterval(myInterval);
+                document.getElementById('coin').src = 'https://www.usmint.gov/wordpress/wp-content/uploads/2020/12/2021-general-george-washington-crossing-the-delaware-quarter-proof-reverse-768x768.jpg';
+                myInterval = setInterval(function(){flipCoin()}, 1);
+            }
+            //adds 1 to flip counter
+            if(x === 180){
+                y += 1;
+            }
+            //changes the image to heads
+            if(x === 270){
+                clearInterval(myInterval);
+                document.getElementById('coin').src = 'https://www.usmint.gov/wordpress/wp-content/uploads/2020/12/2021-general-george-washington-crossing-the-delaware-quarter-uncirculated-obverse-philadelphia-768x768.jpg';
+                myInterval = setInterval(function(){flipCoin()}, 1);
+            }
+            //adds 1 to flip counter
+            if(x === 360){
+                x = 0;
+                y += 1;
+            }
+            //ends the game after number of flips has been reached
+            if(y === numOfFlips){
+                //stops the animation and resets game
+                stopFlipping();
+                //Updates the UI and score
+                updateStats();
+                //Returns the function
+                return 
+            }
+            //This animates the coin rotation on the x axis
+            document.getElementById('coin').style.transform = `rotateX(${x}deg)`;
+        }
+        //This sets the option heads or tails
+        function setOption(option) {
+            document.getElementById('option').innerText = option;
+            document.getElementById('play-game').classList.remove('disabled');
+        }
+        //This generates a random number of coin flips
+        function getRandomNumberOfTurns(){
+            return Math.ceil(Math.random()*10)
+        };
+        //This updates the UI that alerts the user of a win or loss and adds to the score on a win
+        function updateStats() {
+            if (document.getElementById('option').innerText === 'Heads' && document.getElementById('coin').src === 'https://www.usmint.gov/wordpress/wp-content/uploads/2020/12/2021-general-george-washington-crossing-the-delaware-quarter-uncirculated-obverse-philadelphia-768x768.jpg' ){
+                score += 1;
+                document.getElementById('win').classList.remove('d-none');
+
+            } else if (document.getElementById('option').innerText === 'Tails' && document.getElementById('coin').src === 'https://www.usmint.gov/wordpress/wp-content/uploads/2020/12/2021-general-george-washington-crossing-the-delaware-quarter-proof-reverse-768x768.jpg'){
+                score += 1;
+            } else {
+                document.getElementById('loss').classList.remove('d-none');
+            }
+            document.getElementById('score').innerText = score;
+        };
+    </script>
+</html>
