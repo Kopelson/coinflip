@@ -136,6 +136,7 @@
 
             } else if (document.getElementById('option').innerText === 'Tails' && document.getElementById('coin').src === 'https://www.usmint.gov/wordpress/wp-content/uploads/2020/12/2021-general-george-washington-crossing-the-delaware-quarter-proof-reverse-768x768.jpg'){
                 score += 1;
+                document.getElementById('win').classList.remove('d-none');
             } else {
                 document.getElementById('loss').classList.remove('d-none');
             }
